@@ -1,12 +1,14 @@
 import React from "react";
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
-import SingIn_img from "./SignInImg";
+import RightImage from "./SignInImg";
 import { useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
+import { validateEmail,validatePassword,validateMobileNo} from "../regex/userAuthentication";
 
 const SignUp = () => {
-//   const dummyPage = useNavigate();
+    const toSingInPage = useNavigate()
+  const storeData = JSON.parse(localStorage.getItem("userData") || "[]");
     const [inputValue, setInputValue] = useState({
     firstName: "",
     lastName:"",
@@ -14,7 +16,6 @@ const SignUp = () => {
     emailId: "",
     password: "",
   });
-  // const [storeUserData, setStoreUserData] = useState({});
   const getdata = (e) => {
     const { value, name } = e.target;
     setInputValue(() => {
@@ -23,23 +24,22 @@ const SignUp = () => {
   };
   const addToLocal = (e) => {
     e.preventDefault();
-    // const getUserData = localStorage.getItem("userData");
-    // console.log(typeof getUserData);
     console.log(inputValue);
-        const {firstName,lastname, mobileNo, emailId, password } = inputValue;
-      if (firstName === "") {
-          alert("Please enter your first name")
-      } else if (lastname === "") {
-          alert('Please enter your last name')
-      }else if (!emailId.includes("@") && emailId === "") {
-      alert("Enter valid email");
-    } else if (mobileNo === "" && mobileNo.length < 11) {
+    const {firstName,lastName, mobileNo, emailId, password } = inputValue;
+    if (firstName === "") {
+      alert("Please enter your first name")
+    } else if (lastName === "") {
+      alert('Please enter your last name')
+    }else if (!validateEmail.test(emailId)) {
+      alert("Invaild email");
+    }else if (!validateMobileNo.test(mobileNo)) {
       alert("Entered mobile number must be 10 digits");
-    } else if (password === "") {
-      alert("Password contains 8 characters");
-      } else {
-            const strData = JSON.stringify(inputValue)
-            localStorage.setItem("addToLocal",strData)
+    } else if (!validatePassword.test(password)) {
+      alert("Password must be conatains 8 special characters");
+    } else {
+      storeData.push(inputValue);
+      localStorage.setItem("userData", JSON.stringify(storeData));
+      toSingInPage("/dummy");
     }
   };
 
@@ -48,9 +48,12 @@ const SignUp = () => {
       <div className="container mt-3">
         <section className="d-flex justify-content-between">
           <div className="left-data mt-3 p-3 " style={{ width: "100%" }}>
-            <h3 className="text-center col-lg-6">Sign In</h3>
-            <Form>
-              <Form.Group className="mb-3 col-lg-6" controlId="formBasicfirstName">
+            <h3 className="text-center col-lg-6">Sign Up</h3>
+            <Form >
+              <Form.Group
+                className="mb-3 col-lg-6"
+                controlId="formBasicfirstName"
+              >
                 <Form.Control
                   type="text"
                   name="firstName"
@@ -58,7 +61,10 @@ const SignUp = () => {
                   placeholder="First Name"
                 />
               </Form.Group>
-              <Form.Group className="mb-3 col-lg-6" controlId="formBasiclastName">
+              <Form.Group
+                className="mb-3 col-lg-6"
+                controlId="formBasiclastName"
+              >
                 <Form.Control
                   type="text"
                   name="lastName"
@@ -74,12 +80,17 @@ const SignUp = () => {
                   placeholder="Email Id"
                 />
               </Form.Group>
-              <Form.Group className="mb-3 col-lg-6" controlId="formBasicEmail">
+              <Form.Group
+                className="mb-3 col-lg-6"
+                controlId="formBasicMobileNo"
+              >
                 <Form.Control
-                  type="email"
+                  type="tel"
                   name="mobileNo"
                   onChange={getdata}
                   placeholder="Mobile No"
+                  pattern="[0-9]"
+                  required
                 />
               </Form.Group>
               <Form.Group
@@ -103,13 +114,13 @@ const SignUp = () => {
               </Button>
             </Form>
             <p className="mt-3">
-              Already have an account 
+              Already have an account
               <span>
                 <NavLink to={"/signIn"}> Sign In</NavLink>
               </span>
             </p>
-          </div>
-          <SingIn_img />
+          </div >
+          <RightImage />
         </section>
       </div>
     </>

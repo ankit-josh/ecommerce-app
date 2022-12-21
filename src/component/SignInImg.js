@@ -1,6 +1,6 @@
 import React from "react";
 
-const SingIn_img = () => {
+const RightImage = () => {
   return (
     <div className="right-data mt-3" style={{ width: "100%" }}>
       <img
@@ -12,4 +12,4 @@ const SingIn_img = () => {
   );
 };
 
-export default SingIn_img;
+export default RightImage;
